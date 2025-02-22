@@ -6,28 +6,35 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - list:
-        elements:
-        - name: web-color-01
-          namespace: web-color-01
-        - name: web-color-02
-          namespace: web-color-02
-        - name: web-color-03
-          namespace: web-color-03
-        - name: web-color-04
-          namespace: web-color-04
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - environment: dev
+                - environment: prod
+          - clusters: {}
+    # - list:
+    #     elements:
+    #     - name: web-color-01
+    #       namespace: web-color-01
+    #     - name: web-color-02
+    #       namespace: web-color-02
+    #     - name: web-color-03
+    #       namespace: web-color-03
+    #     - name: web-color-04
+    #       namespace: web-color-04
   template:
     metadata:
-      name: '{{name}}'
+      name: webcolor-{{environment}}
     spec:
       project: default
       source:
         repoURL: https://github.com/victormilk/web-color-deploy
         targetRevision: HEAD
-        path: k8s
+        path: k8s/{{environment}}
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{namespace}}' 
+        namespace: webcolor-{{environment}} 
       syncPolicy:
         automated:
           prune: true
