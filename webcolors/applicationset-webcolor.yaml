@@ -14,6 +14,8 @@ spec:
           namespace: web-color-02
         - name: web-color-03
           namespace: web-color-03
+        - name: web-color-04
+          namespace: web-color-04
   template:
     metadata:
       name: '{{name}}'
