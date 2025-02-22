@@ -1,0 +1,36 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: webcolor-apset
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+        - name: web-color-01
+          namespace: web-color-01
+        - name: web-color-02
+          namespace: web-color-02
+        - name: web-color-03
+          namespace: web-color-03
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/victormilk/web-color-deploy
+        targetRevision: HEAD
+        path: k8s
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}' 
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  templatePatch: |
+    
